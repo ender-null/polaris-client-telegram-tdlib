@@ -34,7 +34,7 @@ export class Bot {
       id: me.id,
       firstName: me.first_name,
       lastName: null,
-      username: me.usernames[0],
+      username: me.usernames.active_usernames[0],
       isBot: me.type._ === 'userTypeBot',
     };
     this.config = JSON.parse(process.env.CONFIG);
@@ -81,19 +81,15 @@ export class Bot {
       originalMessage: msg,
     };
 
-    const rawChat = await this.serverRequest('getChat', { chat_id: msg.chat_id });
+    const rawChat: Td.Chat = await this.serverRequest('getChat', { chat_id: msg.chat_id });
     const conversation = new Conversation(msg.chat_id);
     let sender = null;
     if (rawChat && rawChat.title) {
       conversation.title = rawChat.title;
     }
-    let userId;
-    if (msg.sender_id) {
-      userId = msg.sender_id;
-    }
-    if (userId) {
-      const rawSender = await this.serverRequest('getUser', { user_id: userId });
-      sender = new User(userId);
+    if (msg.sender_id._ === 'messageSenderUser') {
+      const rawSender: Td.User = await this.serverRequest('getUser', { user_id: msg.sender_id.user_id });
+      sender = new User(msg.sender_id.user_id);
       if (rawSender) {
         if (rawSender.first_name) {
           sender.firstName = String(rawSender.first_name);
@@ -101,12 +97,12 @@ export class Bot {
         if (rawSender.last_name) {
           sender.lastName = String(rawSender.last_name);
         }
-        if (rawSender.username) {
-          sender.username = String(rawSender.username);
+        if (rawSender.usernames) {
+          sender.username = String(rawSender.usernames.active_usernames[0]);
         }
       }
     } else {
-      sender = new User(conversation.id, conversation.title);
+      sender = new Conversation(conversation.id, conversation.title);
     }
 
     let content;
