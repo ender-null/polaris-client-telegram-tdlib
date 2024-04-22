@@ -430,6 +430,7 @@ export class Bot {
     }
 
     if (data) {
+      logger.info(JSON.stringify(data, null, 4));
       if (msg.type == 'text' && data.input_message_content.text.text.length > 4096) {
         const texts = splitLargeMessage(data.input_message_content.text.text, 4096);
         for (const text of texts) {

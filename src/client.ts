@@ -47,7 +47,7 @@ const client: Client = createClient({
 });
 
 client.on('update', async (update: Td.Update) => {
-  logger.info(JSON.stringify(update));
+  logger.info(JSON.stringify(update, null, 4));
   if (update._ == 'updateNewMessage') {
     if (update.message.is_outgoing) {
       if (update.message.is_channel_post) {
