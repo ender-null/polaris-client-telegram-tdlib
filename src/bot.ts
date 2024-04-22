@@ -2,7 +2,7 @@
 import WebSocket from 'ws';
 import { Conversation, Extra, Message, User, WSBroadcast, WSInit, WSPing } from './types';
 import { Config } from './config';
-import { catchException, isInt, logger, sendRequest, splitLargeMessage } from './utils';
+import { catchException, fromBase64, isInt, logger, sendRequest, splitLargeMessage } from './utils';
 import type * as Td from 'tdlib-types';
 import { Client } from 'tdl';
 import { ParsedUrlQueryInput } from 'querystring';
@@ -444,11 +444,12 @@ export class Bot {
     }
   }
 
-  getInputFile(content: string): Record<string, unknown> {
-    if (content.startsWith('/') || content.startsWith('C:\\')) {
+  async getInputFile(content: string): Promise<Record<string, unknown>> {
+    if (content.startsWith('/')) {
+      const file = await fromBase64(content);
       return {
         _: 'inputFileLocal',
-        path: content,
+        path: file.name,
       };
     } else if (content.startsWith('http')) {
       return {
