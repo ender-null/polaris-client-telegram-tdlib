@@ -255,7 +255,7 @@ export class Bot {
     } else if (msg.type == 'photo') {
       inputMessageContent = {
         _: 'inputMessagePhoto',
-        photo: this.getInputFile(msg.content),
+        photo: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -267,7 +267,7 @@ export class Bot {
     } else if (msg.type == 'animation') {
       inputMessageContent = {
         _: 'inputMessageAnimation',
-        animation: this.getInputFile(msg.content),
+        animation: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -279,7 +279,7 @@ export class Bot {
     } else if (msg.type == 'audio') {
       inputMessageContent = {
         _: 'inputMessageAudio',
-        audio: this.getInputFile(msg.content),
+        audio: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -291,7 +291,7 @@ export class Bot {
     } else if (msg.type == 'document') {
       inputMessageContent = {
         _: 'inputMessageDocument',
-        document: this.getInputFile(msg.content),
+        document: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -303,7 +303,7 @@ export class Bot {
     } else if (msg.type == 'sticker') {
       inputMessageContent = {
         _: 'inputMessageSticker',
-        sticker: this.getInputFile(msg.content),
+        sticker: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -315,7 +315,7 @@ export class Bot {
     } else if (msg.type == 'video') {
       inputMessageContent = {
         _: 'inputMessageVideo',
-        video: this.getInputFile(msg.content),
+        video: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -327,7 +327,7 @@ export class Bot {
     } else if (msg.type == 'voice') {
       inputMessageContent = {
         _: 'inputMessageVoiceNote',
-        voice_note: this.getInputFile(msg.content),
+        voice_note: await this.getInputFile(msg.content),
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -361,7 +361,7 @@ export class Bot {
       }
 
       if (msg.extra && 'photo' in msg.extra) {
-        data.photo = this.getInputFile(msg.extra.photo);
+        data.photo = await this.getInputFile(msg.extra.photo);
       }
 
       if (msg.extra && 'description' in msg.extra) {
