@@ -469,28 +469,36 @@ export class Bot {
   }
 
   async formatTextEntities(msg: Message, text?: string): Promise<any> {
-    if (!text) {
-      text = msg.content;
-    }
-    if (msg.extra && 'format' in msg.extra) {
-      let parseMode = null;
-      let formattedText = null;
-
-      if (msg.extra.format == 'HTML') {
-        parseMode = 'textParseModeHTML';
-      } else {
-        parseMode = 'textParseModeMarkdown';
+    try {
+      if (!text) {
+        text = msg.content;
       }
+      if (msg.extra && 'format' in msg.extra) {
+        let parseMode = null;
+        let formattedText = null;
 
-      formattedText = await this.serverRequest('parseTextEntities', {
-        text: text,
-        parse_mode: {
-          _: parseMode,
-        },
-      });
+        if (msg.extra.format == 'HTML') {
+          parseMode = 'textParseModeHTML';
+        } else {
+          parseMode = 'textParseModeMarkdown';
+        }
 
-      if (formattedText) {
-        return formattedText;
+        formattedText = await this.serverRequest('parseTextEntities', {
+          text: text,
+          parse_mode: {
+            _: parseMode,
+          },
+        });
+
+        if (formattedText) {
+          return formattedText;
+        } else {
+          return {
+            _: 'formattedText',
+            text: text,
+            entities: [],
+          };
+        }
       } else {
         return {
           _: 'formattedText',
@@ -498,7 +506,8 @@ export class Bot {
           entities: [],
         };
       }
-    } else {
+    } catch (error) {
+      logger.error(error);
       return {
         _: 'formattedText',
         text: text,
