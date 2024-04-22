@@ -2,8 +2,9 @@ import WebSocket from 'ws';
 import { Bot } from './bot';
 import { WSMessage } from './types';
 import { catchException, logger, systemName, systemVersion } from './utils';
-import { Client, createClient } from 'tdl';
+import { Client, configure, createClient } from 'tdl';
 import type * as Td from 'tdlib-types';
+import { getTdjson } from 'prebuilt-tdlib';
 
 let bot: Bot;
 let ws: WebSocket;
@@ -28,6 +29,7 @@ process.on('exit', () => {
 
 const config = JSON.parse(process.env.CONFIG);
 
+configure({ tdjson: getTdjson() });
 const client: Client = createClient({
   apiId: config.apiKeys.telegramAppId,
   apiHash: config.apiKeys.telegramApiHash,
