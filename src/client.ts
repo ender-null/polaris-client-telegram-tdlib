@@ -47,17 +47,41 @@ const client: Client = createClient({
 });
 
 client.on('update', async (update: Td.Update) => {
-  console.log('Got update:', update);
-  if (update._ === 'updateNewMessage') {
-    console.log(update);
-    const msg = await bot.convertMessage(update.message);
-    const data: WSMessage = {
-      bot: 'polaris',
-      platform: 'telegram',
-      type: 'message',
-      message: msg,
-    };
-    ws.send(JSON.stringify(data));
+  logger.info(update);
+  if (update._ == 'updateNewMessage') {
+    if (update.message.is_outgoing) {
+      if (update.message.is_channel_post) {
+        if (update.message.content._ == 'messageText') {
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+    if (bot.user && !bot.user.isBot) {
+      await bot.serverRequest('openChat', {
+        chat_id: update.message.chat_id,
+      });
+      await bot.serverRequest('viewMessages', {
+        chat_id: update.message.chat_id,
+        message_ids: [update.message.id],
+        force_read: true,
+      });
+    }
+    if (update.message) {
+      const msg = await bot.convertMessage(update.message);
+      if (msg) {
+        const data: WSMessage = {
+          bot: 'polaris',
+          platform: 'telegram',
+          type: 'message',
+          message: msg,
+        };
+        ws.send(JSON.stringify(data));
+      } else {
+        logger.error(`convertMessage error, original message: ${JSON.stringify(update.message)}`);
+      }
+    }
   }
 });
 
