@@ -112,7 +112,10 @@ const poll = () => {
     await client.invoke({
       _: 'setOption',
       name: 'online',
-      value: null
+      value: {
+        _: 'optionValueBoolean',
+        value: false
+      }
     });
     if (code === 1005) {
       logger.warn(`Disconnected`);

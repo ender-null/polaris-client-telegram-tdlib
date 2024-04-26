@@ -33,7 +33,10 @@ export class Bot {
     await this.bot.invoke({
       _: 'setOption',
       name: 'online',
-      value: true as any
+      value: {
+        _: 'optionValueBoolean',
+        value: true
+      }
     });
     this.user = {
       id: me.id,
