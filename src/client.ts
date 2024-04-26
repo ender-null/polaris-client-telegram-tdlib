@@ -108,7 +108,12 @@ const poll = () => {
 
   ws.on('open', async () => await bot.init());
 
-  ws.on('close', (code) => {
+  ws.on('close', async (code) => {
+    await client.invoke({
+      _: 'setOption',
+      name: 'online',
+      value: null
+    });
     if (code === 1005) {
       logger.warn(`Disconnected`);
     } else if (code === 1006) {
