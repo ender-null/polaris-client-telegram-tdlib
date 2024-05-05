@@ -114,8 +114,8 @@ const poll = () => {
       name: 'online',
       value: {
         _: 'optionValueBoolean',
-        value: false
-      }
+        value: false,
+      },
     });
     if (code === 1005) {
       logger.warn(`Disconnected`);

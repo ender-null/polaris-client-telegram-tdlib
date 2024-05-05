@@ -35,8 +35,8 @@ export class Bot {
       name: 'online',
       value: {
         _: 'optionValueBoolean',
-        value: true
-      }
+        value: true,
+      },
     });
     this.user = {
       id: me.id,
@@ -242,14 +242,14 @@ export class Bot {
     await this.sendChatAction(+msg.conversation.id, msg.type);
     let data = null;
     let inputMessageContent = null;
+    let preview = false;
+    if (msg.extra && 'preview' in msg.extra) {
+      preview = msg.extra.preview;
+    }
 
     if (msg.type == 'text') {
       if (!msg.content || (typeof msg.content == 'string' && msg.content.length == 0)) {
         return;
-      }
-      let preview = false;
-      if (msg.extra && 'preview' in msg.extra) {
-        preview = msg.extra.preview;
       }
       inputMessageContent = {
         _: 'inputMessageText',
@@ -264,6 +264,7 @@ export class Bot {
       inputMessageContent = {
         _: 'inputMessagePhoto',
         photo: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -276,6 +277,7 @@ export class Bot {
       inputMessageContent = {
         _: 'inputMessageAnimation',
         animation: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -288,18 +290,21 @@ export class Bot {
       inputMessageContent = {
         _: 'inputMessageAudio',
         audio: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
         inputMessageContent['caption'] = {
           _: 'formattedText',
           text: msg.extra.caption,
+          disable_web_page_preview: !preview,
         };
       }
     } else if (msg.type == 'document') {
       inputMessageContent = {
         _: 'inputMessageDocument',
         document: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -312,6 +317,7 @@ export class Bot {
       inputMessageContent = {
         _: 'inputMessageSticker',
         sticker: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -324,6 +330,7 @@ export class Bot {
       inputMessageContent = {
         _: 'inputMessageVideo',
         video: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -336,6 +343,7 @@ export class Bot {
       inputMessageContent = {
         _: 'inputMessageVoiceNote',
         voice_note: await this.getInputFile(msg.content),
+        disable_web_page_preview: !preview,
       };
 
       if (msg.extra && 'caption' in msg.extra) {
@@ -444,6 +452,9 @@ export class Bot {
       } else {
         if (msg.type == 'text') {
           data.input_message_content.text = await this.formatTextEntities(msg);
+        }
+        if (msg.extra && 'caption' in msg.extra) {
+          data.input_message_content.caption = await this.formatTextEntities(msg);
         }
         await this.serverRequest(data._, data, false, true);
       }
