@@ -454,7 +454,7 @@ export class Bot {
           data.input_message_content.text = await this.formatTextEntities(msg);
         }
         if (msg.extra && 'caption' in msg.extra) {
-          data.input_message_content.caption = await this.formatTextEntities(msg);
+          data.input_message_content.caption = await this.formatTextEntities(msg, inputMessageContent.caption);
         }
         await this.serverRequest(data._, data, false, true);
       }
