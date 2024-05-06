@@ -413,7 +413,6 @@ export class Bot {
         } else if (msg.extra && msg.extra.caption) {
           data.input_message_content.caption = await this.formatTextEntities(msg, inputMessageContent.caption.text);
         }
-        logger.info(JSON.stringify(data, null, 4));
         await this.serverRequest(data._, data, false, true);
       }
       await this.sendChatAction(+msg.conversation.id, 'cancel');
