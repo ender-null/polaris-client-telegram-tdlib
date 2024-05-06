@@ -383,6 +383,7 @@ export class Bot {
       inputMessageContent.caption = {
         _: 'formattedText',
         text: msg.extra.caption,
+        entities: [],
       };
     }
 
@@ -408,9 +409,9 @@ export class Bot {
         }
       } else {
         if (msg.type === 'text') {
-          data.input_message_content.text = await this.formatTextEntities(msg, inputMessageContent.text);
+          data.input_message_content.text = await this.formatTextEntities(msg, inputMessageContent.text.text);
         } else if (msg.extra && msg.extra.caption) {
-          data.input_message_content.caption = await this.formatTextEntities(msg, inputMessageContent.caption);
+          data.input_message_content.caption = await this.formatTextEntities(msg, inputMessageContent.caption.text);
         }
         logger.info(JSON.stringify(data, null, 4));
         await this.serverRequest(data._, data, false, true);
