@@ -260,56 +260,56 @@ export class Bot {
         },
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'photo') {
+    } else if (msg.type === 'photo') {
       inputMessageContent = {
         _: 'inputMessagePhoto',
         photo: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'animation') {
+    } else if (msg.type === 'animation') {
       inputMessageContent = {
         _: 'inputMessageAnimation',
         animation: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'audio') {
+    } else if (msg.type === 'audio') {
       inputMessageContent = {
         _: 'inputMessageAudio',
         audio: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'document') {
+    } else if (msg.type === 'document') {
       inputMessageContent = {
         _: 'inputMessageDocument',
         document: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'sticker') {
+    } else if (msg.type === 'sticker') {
       inputMessageContent = {
         _: 'inputMessageSticker',
         sticker: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'video') {
+    } else if (msg.type === 'video') {
       inputMessageContent = {
         _: 'inputMessageVideo',
         video: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'voice') {
+    } else if (msg.type === 'voice') {
       inputMessageContent = {
         _: 'inputMessageVoiceNote',
         voice_note: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-    } else if (msg.type == 'forward') {
+    } else if (msg.type === 'forward') {
       data = {
         _: 'forwardMessages',
         chat_id: msg.extra.conversation,
         from_chat_id: msg.conversation.id,
         message_ids: [msg.extra.message],
       };
-    } else if (msg.type == 'native') {
+    } else if (msg.type === 'native') {
       data = {
         _: msg.content,
         chat_id: msg.conversation.id,
@@ -345,7 +345,7 @@ export class Bot {
       if (msg.extra && 'commands' in msg.extra) {
         data.commands = msg.extra.commands;
       }
-    } else if (msg.type == 'api') {
+    } else if (msg.type === 'api') {
       const params: { chat_id?; user_id?; custom_title?; photo?; message_id?; sticker_set_name?; commands? } = {
         chat_id: msg.conversation.id,
       };
@@ -407,13 +407,12 @@ export class Bot {
           await this.serverRequest(data._, split, false, true);
         }
       } else {
-        if (msg.type == 'text') {
-          data.input_message_content.text = await this.formatTextEntities(msg);
-        }
-        if (msg.extra && msg.extra.caption) {
+        if (msg.type === 'text') {
+          data.input_message_content.text = await this.formatTextEntities(msg, inputMessageContent.text);
+        } else if (msg.extra && msg.extra.caption) {
           data.input_message_content.caption = await this.formatTextEntities(msg, inputMessageContent.caption);
         }
-        logger.info(JSON.stringify(data, null, 4))
+        logger.info(JSON.stringify(data, null, 4));
         await this.serverRequest(data._, data, false, true);
       }
       await this.sendChatAction(+msg.conversation.id, 'cancel');
