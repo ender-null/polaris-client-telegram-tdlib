@@ -266,92 +266,42 @@ export class Bot {
         photo: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-        };
-      }
     } else if (msg.type == 'animation') {
       inputMessageContent = {
         _: 'inputMessageAnimation',
         animation: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-        };
-      }
     } else if (msg.type == 'audio') {
       inputMessageContent = {
         _: 'inputMessageAudio',
         audio: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-          disable_web_page_preview: !preview,
-        };
-      }
     } else if (msg.type == 'document') {
       inputMessageContent = {
         _: 'inputMessageDocument',
         document: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-        };
-      }
     } else if (msg.type == 'sticker') {
       inputMessageContent = {
         _: 'inputMessageSticker',
         sticker: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-        };
-      }
     } else if (msg.type == 'video') {
       inputMessageContent = {
         _: 'inputMessageVideo',
         video: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-        };
-      }
     } else if (msg.type == 'voice') {
       inputMessageContent = {
         _: 'inputMessageVoiceNote',
         voice_note: await this.getInputFile(msg.content),
         disable_web_page_preview: !preview,
       };
-
-      if (msg.extra && 'caption' in msg.extra) {
-        inputMessageContent['caption'] = {
-          _: 'formattedText',
-          text: msg.extra.caption,
-        };
-      }
     } else if (msg.type == 'forward') {
       data = {
         _: 'forwardMessages',
@@ -429,6 +379,13 @@ export class Bot {
       return;
     }
 
+    if (msg.extra && msg.extra.caption) {
+      inputMessageContent.caption = {
+        _: 'formattedText',
+        text: msg.extra.caption,
+      };
+    }
+
     if (inputMessageContent) {
       data = {
         _: 'sendMessage',
@@ -453,9 +410,10 @@ export class Bot {
         if (msg.type == 'text') {
           data.input_message_content.text = await this.formatTextEntities(msg);
         }
-        if (msg.extra && 'caption' in msg.extra) {
+        if (msg.extra && msg.extra.caption) {
           data.input_message_content.caption = await this.formatTextEntities(msg, inputMessageContent.caption);
         }
+        logger.info(JSON.stringify(data, null, 4))
         await this.serverRequest(data._, data, false, true);
       }
       await this.sendChatAction(+msg.conversation.id, 'cancel');
