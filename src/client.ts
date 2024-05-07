@@ -117,6 +117,7 @@ const poll = () => {
         value: false,
       },
     });
+    await client.close();
     if (code === 1005) {
       logger.warn(`Disconnected`);
     } else if (code === 1006) {
