@@ -389,6 +389,10 @@ export class Bot {
       };
     }
 
+    if (msg.reply) {
+      inputMessageContent.reply_to_message_id = msg.reply.id;
+    }
+
     if (inputMessageContent) {
       data = {
         _: 'sendMessage',
