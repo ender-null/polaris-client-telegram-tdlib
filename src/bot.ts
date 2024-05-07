@@ -244,10 +244,6 @@ export class Bot {
     await this.sendChatAction(+msg.conversation.id, msg.type);
     let data = null;
     let inputMessageContent = null;
-    let preview = false;
-    if (msg.extra && 'preview' in msg.extra) {
-      preview = msg.extra.preview;
-    }
 
     if (msg.type == 'text') {
       if (!msg.content || (typeof msg.content == 'string' && msg.content.length == 0)) {
@@ -260,49 +256,41 @@ export class Bot {
           text: msg.content,
           entities: [],
         },
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'photo') {
       inputMessageContent = {
         _: 'inputMessagePhoto',
         photo: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'animation') {
       inputMessageContent = {
         _: 'inputMessageAnimation',
         animation: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'audio') {
       inputMessageContent = {
         _: 'inputMessageAudio',
         audio: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'document') {
       inputMessageContent = {
         _: 'inputMessageDocument',
         document: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'sticker') {
       inputMessageContent = {
         _: 'inputMessageSticker',
         sticker: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'video') {
       inputMessageContent = {
         _: 'inputMessageVideo',
         video: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'voice') {
       inputMessageContent = {
         _: 'inputMessageVoiceNote',
         voice_note: await this.getInputFile(msg.content),
-        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'forward') {
       data = {
@@ -389,20 +377,15 @@ export class Bot {
       };
     }
 
-    if (msg.reply) {
-      inputMessageContent.reply_to_message_id = msg.reply.id;
-    }
-
     if (inputMessageContent) {
       data = {
         _: 'sendMessage',
         chat_id: msg.conversation.id,
         input_message_content: inputMessageContent,
+        disable_web_page_preview: !msg.extra.preview,
+        reply_markup: msg.extra?.replyMarkup,
+        reply_to_message_id: msg.reply?.id,
       };
-
-      if (msg.reply) {
-        data.reply_to_message_id = msg.reply.id;
-      }
     }
 
     if (data) {
