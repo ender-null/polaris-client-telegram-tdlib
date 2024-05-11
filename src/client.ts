@@ -10,11 +10,6 @@ let bot: Bot;
 let ws: WebSocket;
 let pingInterval;
 
-logger.debug(`SERVER: ${process.env.SERVER}`);
-logger.debug(`TELEGRAM_PHONE_NUMBER: ${process.env.TELEGRAM_PHONE_NUMBER}`);
-logger.debug(`TELEGRAM_TOKEN: ${process.env.TELEGRAM_TOKEN}`);
-logger.debug(`CONFIG: ${process.env.CONFIG}`);
-
 const close = () => {
   logger.warn(`Close server`);
   ws.terminate();
@@ -26,6 +21,22 @@ process.on('SIGTERM', () => close());
 process.on('exit', () => {
   logger.warn(`Exit process`);
 });
+
+if (!process.env.SERVER || process.env.TELEGRAM_PHONE_NUMBER || process.env.TELEGRAM_TOKEN || process.env.CONFIG) {
+  if (!process.env.SERVER) {
+    logger.warn(`Missing env variable SERVER`);
+  }
+  if (!process.env.CONFIG) {
+    logger.warn(`Missing env variable CONFIG`);
+  }
+  if (!process.env.TELEGRAM_PHONE_NUMBER) {
+    logger.warn(`Missing env variable TELEGRAM_PHONE_NUMBER`);
+  }
+  if (!process.env.TELEGRAM_TOKEN) {
+    logger.warn(`Missing env variable TELEGRAM_TOKEN`);
+  }
+  close();
+}
 
 const config = JSON.parse(process.env.CONFIG);
 
