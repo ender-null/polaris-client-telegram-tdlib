@@ -48,7 +48,6 @@ const client: Client = createClient({
   databaseEncryptionKey: config.apiKeys.databaseEncryptionKey,
   filesDirectory: `${process.cwd()}/data/${config.name}/files`,
   skipOldUpdates: true,
-  verbosityLevel: 1,
   tdlibParameters: {
     application_version: 'latest',
     system_language_code: config.locale,
