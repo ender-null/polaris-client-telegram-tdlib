@@ -127,6 +127,8 @@ export const fromBase64 = (base64String): Promise<FileResult> => {
   });
 };
 
+export const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
 export const loggerFormat = winstonFormat.printf(({ level, message, timestamp, ...metadata }) => {
   let msg = `${timestamp} [${level}]: ${message} `;
   if (metadata && Object.keys(metadata).length > 0) {
