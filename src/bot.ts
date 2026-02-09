@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import WebSocket from 'ws';
-import { Conversation, Extra, Message, User, WSBroadcast, WSInit, WSPing } from './types';
+import { Conversation, Extra, Message, PluginIntent, User, WSBroadcast, WSInit, WSPing } from './types';
 import { Config } from './config';
 import { base64regex, catchException, fromBase64, isInt, logger, sendRequest, splitLargeMessage } from './utils';
 import type * as Td from 'tdlib-types';
@@ -203,8 +203,8 @@ export class Bot {
     if (msg.via_bot_user_id != undefined && msg.via_bot_user_id > 0) {
       extra.viaBotUserId = msg.via_bot_user_id;
     }
-    if (msg.restriction_reason != undefined && msg.restriction_reason != '') {
-      extra.restrictionReason = msg.restriction_reason;
+    if (msg.restriction_info != undefined && msg.restriction_info.restriction_reason != '') {
+      extra.restrictionReason = msg.restriction_info.restriction_reason;
     }
     if (msg.reply_markup != undefined) {
       extra.replyMarkup = msg.reply_markup;
@@ -588,6 +588,27 @@ export class Bot {
         { format: 'HTML', preview: false },
       );
       this.sendMessage(message);
+    }
+  }
+
+  async handleIntents(intents: PluginIntent[]): Promise<void> {
+    const commands = [];
+    for (const intent of intents) {
+      commands.push({
+        command: intent.id,
+        description: intent.description,
+      });
+    }
+
+    if (commands.length > 0) {
+      await this.bot.invoke({
+        _: 'setCommands',
+        commands: commands,
+      });
+    } else {
+      await this.bot.invoke({
+        _: 'deleteCommands',
+      });
     }
   }
 }

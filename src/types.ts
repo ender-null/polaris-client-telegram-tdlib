@@ -176,6 +176,24 @@ export class BroadcastMessage {
   }
 }
 
+export interface PluginParameter {
+  name: string;
+  description: string;
+  type?: 'string' | 'number' | 'boolean' | 'file';
+  required?: boolean;
+  translations?: Record<string, string>;
+}
+
+export interface PluginIntent {
+  id: string;
+  aliases?: string[];
+  description: string;
+  parameters?: Record<string, PluginParameter>;
+  requiredApiKey?: string;
+  examples?: string[];
+  entities?: string[];
+}
+
 export interface WSData {
   bot: string;
   platform: string;

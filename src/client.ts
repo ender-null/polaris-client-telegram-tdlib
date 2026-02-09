@@ -12,7 +12,7 @@ let pingInterval;
 
 const close = () => {
   logger.warn(`Close server`);
-  ws.terminate();
+  ws?.terminate();
   process.exit();
 };
 
@@ -38,6 +38,7 @@ if (!process.env.SERVER || !process.env.TELEGRAM_PHONE_NUMBER || !process.env.TE
   close();
 }
 
+const serverUrl = process.env.SERVER;
 const config = JSON.parse(process.env.CONFIG);
 
 configure({ tdjson: getTdjson() });
@@ -97,9 +98,14 @@ client.on('update', async (update: Td.Update) => {
 
 client.on('error', console.error);
 
-const poll = () => {
+const poll = async () => {
   logger.info('Starting polling...');
-  ws = new WebSocket(process.env.SERVER);
+  const userId = (
+    await await client.invoke({
+      _: 'getMe',
+    })
+  ).id;
+  ws = new WebSocket(`${serverUrl}?platform=telegram&accountId=${userId}`);
   bot = new Bot(ws, client);
 
   clearInterval(pingInterval);
