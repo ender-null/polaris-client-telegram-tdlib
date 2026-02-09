@@ -149,9 +149,9 @@ jobs:
           USERNAME: op://end.works/end.works/username
           KEY: op://end.works/SSH Key/private key
           FINGERPRINT: op://end.works/SSH Key/fingerprint
-          SERVER: op://end.works/Peto-tan Config/server
+          SERVER: op://end.works/Arcturus Config/server
           CONFIG: op://end.works/Peto-tan Config/config telegram
-          TELEGRAM_TOKEN: op://end.works/Peto-tan Config/telegram token
+          TELEGRAM_TOKEN: op://end.works/Arcturus Config/telegram token
           TELEGRAM_PHONE_NUMBER: op://end.works/Peto-tan Config/telegram phone
 
       - name: Run container on host

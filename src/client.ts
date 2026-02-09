@@ -22,18 +22,15 @@ process.on('exit', () => {
   logger.warn(`Exit process`);
 });
 
-if (!process.env.SERVER || !process.env.TELEGRAM_PHONE_NUMBER || !process.env.TELEGRAM_TOKEN || !process.env.CONFIG) {
+if (!process.env.SERVER || (!process.env.TELEGRAM_PHONE_NUMBER && !process.env.TELEGRAM_TOKEN) || !process.env.CONFIG) {
   if (!process.env.SERVER) {
     logger.warn(`Missing env variable SERVER`);
   }
   if (!process.env.CONFIG) {
     logger.warn(`Missing env variable CONFIG`);
   }
-  if (!process.env.TELEGRAM_PHONE_NUMBER) {
-    logger.warn(`Missing env variable TELEGRAM_PHONE_NUMBER`);
-  }
-  if (!process.env.TELEGRAM_TOKEN) {
-    logger.warn(`Missing env variable TELEGRAM_TOKEN`);
+  if (!process.env.TELEGRAM_PHONE_NUMBER && !process.env.TELEGRAM_TOKEN) {
+    logger.warn(`Missing env variable TELEGRAM_PHONE_NUMBER or TELEGRAM_TOKEN`);
   }
   close();
 }
