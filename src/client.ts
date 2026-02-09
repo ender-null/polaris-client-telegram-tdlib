@@ -97,6 +97,22 @@ client.on('error', console.error);
 
 const poll = async () => {
   logger.info('Starting polling...');
+  let loggedIn = false;
+  if (process.env.TELEGRAM_PHONE_NUMBER) {
+    try {
+      await client.login(() => ({
+        getPhoneNumber: (retry) =>
+          retry ? Promise.reject('Invalid phone number') : Promise.resolve(process.env.TELEGRAM_PHONE_NUMBER),
+      }));
+      loggedIn = true;
+    } catch (err) {
+      console.warn('Phone login failed, falling back to bot token:', err);
+    }
+  }
+
+  if (!loggedIn && process.env.TELEGRAM_TOKEN) {
+    await client.loginAsBot(process.env.TELEGRAM_TOKEN);
+  }
   const userId = (
     await await client.invoke({
       _: 'getMe',

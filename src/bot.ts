@@ -19,14 +19,6 @@ export class Bot {
   }
 
   async init() {
-    if (process.env.TELEGRAM_PHONE_NUMBER) {
-      await this.bot.login(() => ({
-        getPhoneNumber: (retry) =>
-          retry ? Promise.reject('Invalid phone number') : Promise.resolve(process.env.TELEGRAM_PHONE_NUMBER),
-      }));
-    } else if (process.env.TELEGRAM_TOKEN) {
-      await this.bot.loginAsBot(process.env.TELEGRAM_TOKEN);
-    }
     const me = await this.bot.invoke({
       _: 'getMe',
     });
