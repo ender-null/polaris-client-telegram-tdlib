@@ -144,16 +144,15 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          HOST: op://end.works/wired/URL
-          PORT: op://end.works/wired/port
-          USERNAME: op://end.works/wired/username
+          HOST: op://end.works/end.works/URL
+          PORT: op://end.works/end.works/port
+          USERNAME: op://end.works/end.works/username
           KEY: op://end.works/SSH Key/private key
           FINGERPRINT: op://end.works/SSH Key/fingerprint
           SERVER: op://end.works/Peto-tan Config/server
           CONFIG: op://end.works/Peto-tan Config/config telegram
           TELEGRAM_TOKEN: op://end.works/Peto-tan Config/telegram token
           TELEGRAM_PHONE_NUMBER: op://end.works/Peto-tan Config/telegram phone
-          MONGODB_URI: op://end.works/Peto-tan Config/mongodb uri
 
       - name: Run container on host
         uses: appleboy/ssh-action@v1.0.3
@@ -166,7 +165,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository }}:${{ env.TAG }}
             docker stop ${{ env.CONTAINER_NAME }}
             docker rm ${{ env.CONTAINER_NAME }}
-            docker run -e SERVER=${{ env.SERVER }} -e CONFIG='${{ env.CONFIG }}' -e TELEGRAM_PHONE_NUMBER=${{ env.TELEGRAM_PHONE_NUMBER }} -e TELEGRAM_TOKEN=${{ env.TELEGRAM_TOKEN }} -e MONGODB_URI=${{ env.MONGODB_URI }} -v $PWD/logs:/usr/src/app/logs -v $PWD/data:/usr/src/app/data -e TZ=Europe/Madrid -ti -d --restart unless-stopped --name ${{ env.CONTAINER_NAME }} ghcr.io/${{ github.repository }}:${{ env.TAG }}
+            docker run -e SERVER=${{ env.SERVER }} -e CONFIG='${{ env.CONFIG }}' -e TELEGRAM_PHONE_NUMBER=${{ env.TELEGRAM_PHONE_NUMBER }} -e TELEGRAM_TOKEN=${{ env.TELEGRAM_TOKEN }} -v $PWD/logs:/usr/src/app/logs -v $PWD/data:/usr/src/app/data -e TZ=Europe/Madrid -ti -d --restart unless-stopped --name ${{ env.CONTAINER_NAME }} ghcr.io/${{ github.repository }}:${{ env.TAG }}
 
       - name: Generate summary
         id: generate-summary
