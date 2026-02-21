@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import WebSocket from 'ws';
-import { Conversation, Extra, Message, PluginIntent, User, WSBroadcast, WSInit, WSPing } from './types';
-import { Config } from './config';
-import { base64regex, catchException, fromBase64, isInt, logger, sendRequest, splitLargeMessage } from './utils';
-import type * as Td from 'tdlib-types';
-import { Client } from 'tdl';
 import { ParsedUrlQueryInput } from 'querystring';
+import { Client } from 'tdl';
+import type * as Td from 'tdlib-types';
+import WebSocket from 'ws';
+import { Config } from './config';
+import { Conversation, Extra, Message, PluginIntent, User, WSBroadcast, WSInit, WSPing } from './types';
+import { base64regex, catchException, fromBase64, isInt, logger, sendRequest, splitLargeMessage } from './utils';
 
 export class Bot {
   user: User;
@@ -241,6 +241,10 @@ export class Bot {
       if (!msg.content || (typeof msg.content == 'string' && msg.content.length == 0)) {
         return;
       }
+      let preview = false;
+      if (msg.extra && msg.extra.preview) {
+        preview = msg.extra.preview;
+      }
       inputMessageContent = {
         _: 'inputMessageText',
         text: {
@@ -248,7 +252,7 @@ export class Bot {
           text: msg.content,
           entities: [],
         },
-        disable_web_page_preview: !msg.extra.preview,
+        disable_web_page_preview: !preview,
       };
     } else if (msg.type === 'photo') {
       inputMessageContent = {
