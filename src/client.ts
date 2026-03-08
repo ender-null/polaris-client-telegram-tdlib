@@ -1,10 +1,10 @@
+import { getTdjson } from 'prebuilt-tdlib';
+import { Client, configure, createClient } from 'tdl';
+import type * as Td from 'tdlib-types';
 import WebSocket from 'ws';
 import { Bot } from './bot';
 import { WSMessage } from './types';
 import { catchException, logger, systemName, systemVersion } from './utils';
-import { Client, configure, createClient } from 'tdl';
-import type * as Td from 'tdlib-types';
-import { getTdjson } from 'prebuilt-tdlib';
 
 let bot: Bot;
 let ws: WebSocket;
@@ -118,7 +118,12 @@ const poll = async () => {
       _: 'getMe',
     })
   ).id;
-  ws = new WebSocket(`${serverUrl}?platform=telegram&accountId=${userId}`);
+  ws = new WebSocket(`${serverUrl}?platform=telegram&accountId=${userId}`, {
+    headers: {
+      'CF-Access-Client-Id': process.env.CF_ACCESS_CLIENT_ID,
+      'CF-Access-Client-Secret': process.env.CF_ACCESS_CLIENT_SECRET,
+    },
+  });
   bot = new Bot(ws, client);
 
   clearInterval(pingInterval);
